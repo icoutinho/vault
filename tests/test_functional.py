@@ -1,11 +1,11 @@
 from vault import models
 
-def test_my_view_success(testapp, dbsession):
-    model = models.MyModel(name='one', value=55)
-    dbsession.add(model)
-    dbsession.flush()
-
+def test_my_view_success(testapp):
     res = testapp.get('/', status=200)
+    assert res.body
+
+def test_category_success(testapp):
+    res = testapp.get('/category', status=200)
     assert res.body
 
 def test_notfound(testapp):

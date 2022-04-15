@@ -12,7 +12,7 @@ def setup_models(dbsession):
     Add or update models / fixtures in the database.
 
     """
-    model = models.mymodel.MyModel(name='one', value=1)
+    model = models.category.Category(name='games')
     dbsession.add(model)
 
 
