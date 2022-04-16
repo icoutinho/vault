@@ -13,4 +13,10 @@ NAMING_CONVENTION = {
 }
 
 metadata = MetaData(naming_convention=NAMING_CONVENTION)
-Base = declarative_base(metadata=metadata)
+
+class MyBase(object):
+    def __json__(self, request):
+        json_exclude = getattr(self, '__json_exclude__', set())
+        return {k: v for k, v in self.__dict__.items() if not k.startswith('_') and k not in json_exclude}
+
+Base = declarative_base(cls=MyBase, metadata=metadata)
