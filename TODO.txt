@@ -1,0 +1,14 @@
+POST ERRORS
+
+- Invalid format
+- Invalid fields
+
+PUT SUCCESS
+
+- All fields
+
+PUT ERRORS
+
+- Not Found
+- Invalid format
+- Invalid fields
