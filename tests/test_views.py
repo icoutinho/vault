@@ -2,8 +2,6 @@ from multiprocessing import dummy
 from vault import models
 from vault.views.notfound import notfound_view
 from vault.views.category import CategoryView
-from pytest import fixture
-import json
 
 
 
@@ -28,14 +26,11 @@ def test_get_category_view_success_filter(dummy_request, dbsession):
     assert dummy_request.response.status_code == 200
     assert len(info['categories']) == 2
 
-def test_post_category_view_success(dummy_request, dbsession):
+def test_post_category_view_success(testapp, dbsession):
     new_category = models.Category(name='books')
-    dummy_request.body = json.dumps(new_category)
-    print(dummy_request.body)
-    dummy_request.method = 'POST'
     assert len(dbsession.query(models.Category).all()) == 0
-    info = CategoryView(dummy_request).add()
-    assert dummy_request.response.status_code == 200
+    info = testapp.post_json('/category.json', new_category.to_dict())
+    assert info.status_code == 200
     assert len(dbsession.query(models.Category).all()) == 1
 
 

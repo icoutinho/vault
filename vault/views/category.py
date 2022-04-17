@@ -32,7 +32,8 @@ class CategoryView:
     @view_config(route_name='category_json', request_method='POST', renderer='json')
     def add(self):
         try:
-            pass
+            self.request.dbsession.add(Category(**self.request.json_body))
+            self.request.dbsession.flush()
         except SQLAlchemyError as ex:
             db_err_msg = ex
             return Response(db_err_msg, content_type='text/plain', status=500)

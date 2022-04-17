@@ -16,6 +16,9 @@ metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 class MyBase(object):
     def __json__(self, request):
+        return self.to_dict()
+
+    def to_dict(self):
         json_exclude = getattr(self, '__json_exclude__', set())
         return {k: v for k, v in self.__dict__.items() if not k.startswith('_') and k not in json_exclude}
 
