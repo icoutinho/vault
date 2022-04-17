@@ -30,8 +30,20 @@ def test_post_category_view_success(testapp, dbsession):
     new_category = models.Category(name='books')
     assert len(dbsession.query(models.Category).all()) == 0
     info = testapp.post_json('/category.json', new_category.to_dict())
-    assert info.status_code == 200
+    assert info.status_int == 200
     assert len(dbsession.query(models.Category).all()) == 1
+    inserted = dbsession.query(models.Category).first()
+    assert 'id' in inserted.__dict__
+
+def test_post_category_invalid(testapp, dbsession):
+    new_category = models.Category(name='over32charactersstring_12312391203912391209301293120393210391203912381293812098310928')
+    info = testapp.post_json('/category.json', new_category.to_dict(), expect_errors=True)
+    assert info.status_int == 400
+    assert 'name' in info.json
+    info = testapp.post_json('/category.json', {}, expect_errors=True)
+    assert info.status_int == 400
+    assert info.json['name'] == 'Required'
+    
 
 
 def test_notfound_view(app_request):
