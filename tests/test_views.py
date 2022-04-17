@@ -39,10 +39,16 @@ def test_post_category_invalid(testapp, dbsession):
     new_category = models.Category(name='over32charactersstring_12312391203912391209301293120393210391203912381293812098310928')
     info = testapp.post_json('/category.json', new_category.to_dict(), expect_errors=True)
     assert info.status_int == 400
-    assert 'name' in info.json
+    assert 'name' in info.json["err"]
+    assert info.json["exc"] == "Invalid"
     info = testapp.post_json('/category.json', {}, expect_errors=True)
     assert info.status_int == 400
-    assert info.json['name'] == 'Required'
+    assert info.json["err"]['name'] == 'Required'
+    assert info.json["exc"] == "Invalid"
+    info = testapp.post_json('/category.json', {"name": "books", "theme": "romance"}, expect_errors=True)
+    assert info.status_int == 400
+    assert 'Unrecognized keys in mapping' in info.json['err']
+    assert info.json["exc"] == "UnsupportedFields"
     
 
 

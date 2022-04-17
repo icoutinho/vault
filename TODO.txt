@@ -1,18 +1,19 @@
-CHANGE ENGINE FROM SQLITE TO MYSQL
-
- - check migration ok
-
 POST ERRORS
 
 - Invalid format (OK)
-- Invalid fields
+- Invalid fields (OK)
 
 PUT SUCCESS
 
 - All fields
-
 PUT ERRORS
 
 - Not Found
 - Invalid format
 - Invalid fields
+
+PATCH SUCCESS
+
+- Some fields
+
+DELETE SUCCESS

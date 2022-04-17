@@ -16,4 +16,4 @@ class Category(Base):
 
 
 Index('uq_cat_name', Category.name, unique=True, mysql_length=255)
-category_schema = SQLAlchemySchemaNode(Category)
+category_schema = SQLAlchemySchemaNode(Category, unknown='raise')
