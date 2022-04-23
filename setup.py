@@ -21,7 +21,8 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'colanderalchemy',
-    'mysqlclient'
+    'mysqlclient',
+    'pyramid_swagger'
 ]
 
 tests_require = [

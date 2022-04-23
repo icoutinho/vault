@@ -7,5 +7,6 @@ def main(global_config, **settings):
         config.include('pyramid_jinja2')
         config.include('.routes')
         config.include('.models')
+        config.add_route('category_json', '/category', request_method='GET')
         config.scan()
     return config.make_wsgi_app()
