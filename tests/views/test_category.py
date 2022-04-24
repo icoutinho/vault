@@ -1,12 +1,6 @@
-from multiprocessing import dummy
-
-from webob import Response
 from vault import models
 from vault.models.category import Category
-from vault.views.notfound import notfound_view
 from vault.views.category import CategoryView
-
-
 
 def test_get_category_view_success_filter(dummy_request, dbsession):
     dbsession.add(models.Category(name='games'))
@@ -52,7 +46,7 @@ def test_get_category_byname_notfound(dummy_request, dbsession):
     resp = CategoryView(dummy_request).get_one()
     assert dummy_request.response.status_code == 404
     assert resp['exc'] == 'NoResultFound' 
-    
+
 
 def test_post_category_view_success(testapp, dbsession):
     new_category = models.Category(name='books')
@@ -77,10 +71,14 @@ def test_post_category_invalid(testapp, dbsession):
     assert info.status_int == 400
     assert 'Unrecognized keys in mapping' in info.json['err']
     assert info.json["exc"] == "UnsupportedFields"
-    
 
+def test_category_success(testapp):
+    res = testapp.get('/category', status=200)
+    assert res.body
 
-def test_notfound_view(app_request):
-    info = notfound_view(app_request)
-    assert app_request.response.status_int == 404
-    assert info == {}
+def test_category_byname_success(testapp, dbsession):
+    dbsession.add(models.Category(name='games'))
+    dbsession.flush()
+    res = testapp.get('/category/games.json')
+    assert res.json_body['name'] == 'games'
+    assert res.status_code == 200

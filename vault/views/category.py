@@ -6,8 +6,6 @@ from vault.models.category import Category, category_schema
 from sqlalchemy import and_
 from ..utils import trycatcher, validate
 
-
-
 @view_defaults(route_name='category')
 class CategoryView:
     def __init__(self, request):

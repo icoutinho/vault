@@ -1,8 +1,3 @@
-POST ERRORS
-
-- Invalid format (OK)
-- Invalid fields (OK)
-
 PUT SUCCESS
 
 - All fields
