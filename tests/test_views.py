@@ -1,5 +1,8 @@
 from multiprocessing import dummy
+
+from webob import Response
 from vault import models
+from vault.models.category import Category
 from vault.views.notfound import notfound_view
 from vault.views.category import CategoryView
 
@@ -10,21 +13,46 @@ def test_get_category_view_success_filter(dummy_request, dbsession):
     dbsession.add(models.Category(name='furniture'))
     dbsession.flush()
     dummy_request.params = {"name": "furniture"}
-    info = CategoryView(dummy_request).home()
+    info = CategoryView(dummy_request).get_list()
     assert dummy_request.response.status_code == 200
     assert len(info['categories']) == 1
     dummy_request.params = {"name": "games"}
-    info = CategoryView(dummy_request).home()
+    info = CategoryView(dummy_request).get_list()
     assert dummy_request.response.status_code == 200
     assert len(info['categories']) == 1
     dummy_request.params = {"name": "books"}
-    info = CategoryView(dummy_request).home()
+    info = CategoryView(dummy_request).get_list()
     assert dummy_request.response.status_code == 200
     assert len(info['categories']) == 0
     dummy_request.params = {}
-    info = CategoryView(dummy_request).home()
+    info = CategoryView(dummy_request).get_list()
     assert dummy_request.response.status_code == 200
     assert len(info['categories']) == 2
+
+def test_get_category_byname_success(dummy_request, dbsession):
+    dbsession.add(models.Category(name='games'))
+    dbsession.add(models.Category(name='furniture'))
+    dbsession.flush()
+    dummy_request.matchdict['name'] = 'furniture'
+    resp = CategoryView(dummy_request).get_one()
+    assert dummy_request.response.status_code == 200
+    assert isinstance(resp, Category)
+    assert resp.name == 'furniture'
+    dummy_request.matchdict['name'] = 'games'
+    resp = CategoryView(dummy_request).get_one()
+    assert dummy_request.response.status_code == 200
+    assert isinstance(resp, Category)
+    assert resp.name == 'games'
+
+def test_get_category_byname_notfound(dummy_request, dbsession):
+    dbsession.add(models.Category(name='games'))
+    dbsession.add(models.Category(name='furniture'))
+    dbsession.flush()
+    dummy_request.matchdict['name'] = 'documents'
+    resp = CategoryView(dummy_request).get_one()
+    assert dummy_request.response.status_code == 404
+    assert resp['exc'] == 'NoResultFound' 
+    
 
 def test_post_category_view_success(testapp, dbsession):
     new_category = models.Category(name='books')

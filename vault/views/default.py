@@ -7,7 +7,7 @@ from vault.models.category import Category
 from .. import models
 
 
-@view_config(route_name='home', renderer='vault:templates/mytemplate.jinja2')
+@view_config(route_name='healthcheck', renderer='vault:templates/healthcheck.jinja2')
 def my_view(request):
     return {'project': 'vault'}
 

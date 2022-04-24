@@ -1,6 +1,6 @@
+from typing import final
 import colander
-from sqlalchemy.exc import SQLAlchemyError
-from pyramid.response import Response
+from sqlalchemy.exc import SQLAlchemyError, NoResultFound
 
 def trycatcher(f):
     def wrapper(self):
@@ -12,10 +12,15 @@ def trycatcher(f):
         except colander.Invalid as ex:
             self.request.response.status = 400
             return {"err": ex.asdict(), "exc": ex.__class__.__name__}
+        except NoResultFound as ex:
+            self.request.response.status = 404
+            return {"err": ex, "exc": ex.__class__.__name__}
         except SQLAlchemyError as ex:
-            return Response({"err": ex, "exc": ex.__class__.__name__}, content_type='application/json', status=500)
+            self.request.response.status = 500
+            return {"err": ex, "exc": ex.__class__.__name__}
         except Exception as ex:
-            return Response({"err": ex, "exc": ex.__class__.__name__}, content_type='application/json', status=500)
+            self.request.response.status = 500
+            return {"err": ex, "exc": ex.__class__.__name__}
     return wrapper
 
 def validate(schema):
